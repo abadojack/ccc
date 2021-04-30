@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+service Bank {
+	rpc MsgDelivery(MsgDeliveryRequest) returns (MsgDeliveryResponse) {}
+    rpc GetWriteSet(WriteSetRequest) returns (WriteSetResponse) {}
+    rpc IsLastWriteSet(WriteSetResponse) returns (IsLastResponse) {}
+}
+
+enum RequestType {
+	QUERY = 0;
+	DEPOSIT = 1;
+	WITHDRAW = 2;
+}
+
+message MsgDeliveryRequest  {
+    int64 money = 1;
+    RequestType request_type = 2;
+    int64 request_id = 3;
+    int64 source_id = 4;
+    int64 clock = 5;
+    Source source = 6;
+    int64 destination_id = 7;
+    int64 progressive_id = 8;
+}
+
+enum StatusCode {
+	SUCCESS = 0;
+	FAILURE = 1;
+	ERROR = 2;
+}
+
+message WriteSet {
+    int64 source_id = 1;
+    int64 progressive_id = 2;
+    bool is_executed = 3;
+}
+
+message MsgDeliveryResponse {
+    int64 id = 1;
+    double money = 2;
+    StatusCode status_code = 3;
+    int64 clock = 4;
+    WriteSet write_id = 5;
+}
+
+enum Source {
+    BRANCH = 0;
+    CUSTOMER = 1;
+}
+
+message WriteSetRequest {
+    int64 source_id = 1;
+    int64 clock = 2;
+    int64 requested_id = 3;
+}
+
+message IsLastResponse {
+    bool is_last = 1;
+}
+
+message WriteSetResponse {
+    int64 source_id = 1;
+    int64 clock = 2;
+    int64 progressive_id = 3;
+}
